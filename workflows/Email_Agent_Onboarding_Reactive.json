@@ -1,0 +1,1403 @@
+{
+  "name": "Email Agent - onboarding_setup(REACTIVE ) - Sai",
+  "nodes": [
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "Email_id",
+              "lookupValue": "={{ $json.from }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        -400,
+        256
+      ],
+      "id": "a510070e-fe75-4506-a811-e20870362d6d",
+      "name": "Get row(s) in sheet",
+      "alwaysOutputData": true,
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1b8b5e97-2af6-4297-bb04-82d53faeaf0f",
+              "leftValue": "={{ $json.support_count }}",
+              "rightValue": 2,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        32,
+        240
+      ],
+      "id": "64d9472a-c64b-44af-b41f-6f983e9007bd",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "description": "Call this tool to access the database to answer the user's question"
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolVectorStore",
+      "typeVersion": 1.1,
+      "position": [
+        736,
+        736
+      ],
+      "id": "e854e321-2bf5-4b77-bfce-4e4d184feeae",
+      "name": "Answer questions with a vector store"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        928,
+        944
+      ],
+      "id": "66dd5ef5-2047-4460-b051-592be89e9042",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pineconeIndex": {
+          "__rl": true,
+          "value": "onboarding",
+          "mode": "list",
+          "cachedResultName": "onboarding"
+        },
+        "options": {
+          "pineconeNamespace": "onboarding"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStorePinecone",
+      "typeVersion": 1.3,
+      "position": [
+        640,
+        944
+      ],
+      "id": "90373977-36cb-4f03-aaf4-37d265e49b44",
+      "name": "Pinecone Vector Store",
+      "credentials": {
+        "pineconeApi": {
+          "id": "94XPtRv732W8lWuj",
+          "name": "onboarding"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        672,
+        1104
+      ],
+      "id": "265097c7-0e04-4e5a-bd22-7412307f2992",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        640,
+        720
+      ],
+      "id": "43904dcd-0ee7-45c4-94f1-3193d7597e51",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a Knowledge Retrieval Agent.\nuser mail  : {{ $('Edit Fields').item.json.emailBody }}",
+        "options": {
+          "systemMessage": "You are a Knowledge Retrieval Agent.\nYour job is to answer user questions. All of this information can be found in the vector store tool.\nso call that tool each time you are asked a question to ensure you\nare providing accurate information. "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        640,
+        512
+      ],
+      "id": "93880d41-823d-4ad8-8679-1d29ff00d361",
+      "name": "RAG"
+    },
+    {
+      "parameters": {
+        "sendTo": "=thejohnwick540@gmail.com",
+        "subject": "={{ $json.output.subject }}",
+        "message": "={{ $json.output.response }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        1488,
+        512
+      ],
+      "id": "ba22c454-1d23-45c4-baba-cf9231e29b31",
+      "name": "Send a message",
+      "webhookId": "93187298-5eac-4d52-bd8e-a1cb429bcd6c",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "last_interaction": "={{ $now.format('yyyy-MM-dd') }}",
+            "Email_id": "={{ $('Edit Fields').item.json.email }}",
+            "Thread_id": "={{ $('When Executed by Another Workflow').item.json.threadID }}",
+            "Urgency": "={{ $('Query Classifier').item.json.output.urgency }}",
+            "Categories": "={{ $('Query Classifier').item.json.output.query_type }}",
+            "Email body": "={{ $('Edit Fields').item.json.emailBody }}",
+            "support_count": "={{ Number($('Get row(s) in sheet').item.json.support_count) + 1 }}",
+            "onboarding_status": "Active",
+            "Generated Reply": "={{ $('Reply Generator').item.json.output.response }}"
+          },
+          "matchingColumns": [
+            "Thread_id"
+          ],
+          "schema": [
+            {
+              "id": "Thread_id",
+              "displayName": "Thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email_id",
+              "displayName": "Email_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "signup_date",
+              "displayName": "signup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_day",
+              "displayName": "current_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "onboarding_status",
+              "displayName": "onboarding_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "support_count",
+              "displayName": "support_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "paused_until",
+              "displayName": "paused_until",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email body",
+              "displayName": "Email body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Generated Reply",
+              "displayName": "Generated Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_interaction",
+              "displayName": "last_interaction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1712,
+        512
+      ],
+      "id": "8bd93c92-e7ba-49f1-b1bd-931b6bb77792",
+      "name": "Append or update row in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "select": "channel",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ALU0KMMR7",
+          "mode": "list",
+          "cachedResultName": "testing-on-boarding"
+        },
+        "text": "=User Issue Detected\n\nName: {{ $('When Executed by Another Workflow').item.json.name }}\n\nThread ID: {{ $('When Executed by Another Workflow').item.json.threadID }}\n\nIssue Summary:\n{{ $('When Executed by Another Workflow').item.json.Emailsummary }}",
+        "otherOptions": {
+          "includeLinkToWorkflow": false
+        }
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        320,
+        0
+      ],
+      "id": "caa51e4b-db0d-4100-9780-3f355e3e3df3",
+      "name": "Send a message1",
+      "webhookId": "cdfc4d83-d6b7-4160-bef3-badf3ea55e5b",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "KCuGXgtqiguEZGB1",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email_id": "={{ $('When Executed by Another Workflow').item.json.from }}",
+            "onboarding_status": "paused",
+            "Thread_id": "={{ $('When Executed by Another Workflow').item.json.threadID }}"
+          },
+          "matchingColumns": [
+            "Email_id"
+          ],
+          "schema": [
+            {
+              "id": "Thread_id",
+              "displayName": "Thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email_id",
+              "displayName": "Email_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "signup_date",
+              "displayName": "signup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_day",
+              "displayName": "current_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "onboarding_status",
+              "displayName": "onboarding_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "support_count",
+              "displayName": "support_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "paused_until",
+              "displayName": "paused_until",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email body",
+              "displayName": "Email body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Generated Reply",
+              "displayName": "Generated Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_interaction",
+              "displayName": "last_interaction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        544,
+        0
+      ],
+      "id": "4cad33c7-15b5-4ef5-a486-29f6b51a1a56",
+      "name": "Append or update row in sheet1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        256,
+        704
+      ],
+      "id": "df956c02-4d60-48ff-9ad8-2c874b27e8f4",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"query_type\": \"\",\n  \"urgency\": \"\",\n  \"setup_stage\": \"\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        448,
+        704
+      ],
+      "id": "59a6db8d-98dc-4687-afb6-8ca6ce41a89a",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "4e70798e-e5b9-49ce-bc7d-a9800e09fb2f",
+              "name": "emailBody",
+              "value": "={{ $('When Executed by Another Workflow').item.json.emailBody }}",
+              "type": "string"
+            },
+            {
+              "id": "d222b0d0-5bf2-47c9-9b65-2b7d23a32ada",
+              "name": "subject",
+              "value": "={{ $('When Executed by Another Workflow').item.json.subject }}",
+              "type": "string"
+            },
+            {
+              "id": "b7c79e96-d9cc-4a96-a386-965959293046",
+              "name": "email",
+              "value": "={{ $('When Executed by Another Workflow').item.json.from }}",
+              "type": "string"
+            },
+            {
+              "id": "06e8b638-5c51-4992-947a-2e55e65eb2c5",
+              "name": "name",
+              "value": "={{ $('When Executed by Another Workflow').item.json.name }}",
+              "type": "string"
+            },
+            {
+              "id": "7cdbfe07-001a-43e5-bc1f-12e70848a777",
+              "name": "Emailsummary",
+              "value": "={{ $('When Executed by Another Workflow').item.json.Emailsummary }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        240,
+        256
+      ],
+      "id": "c96e19db-2741-4fee-b5a6-ad3d58c3a60d",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI assistant that classifies onboarding-related support emails.\nuser mail : {{ $json.emailBody }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=\n\nYour task is to analyze the user's email and classify the request.\n\nUSER CONTEXT\nEmail: {{ $json.email }}\nSignup Date: {{ $json.signup_date }}\nCurrent Onboarding Day: {{ $json.current_day }}\nSetup Completed: {{ $json.setup_completed }}\n\nEMAIL BODY\n{{ $json.emailBody }}\n\nCLASSIFICATION RULES\n\nquery_type:\n- setup_help → user needs help completing setup\n- first_steps → user asking how to get started\n- feature_question → asking about product features\n- stuck → user cannot proceed or something is not working\n- general → other onboarding related questions\n\nurgency:\n- high → user blocked, frustrated, or cannot continue\n- medium → needs help but not blocked\n- low → informational question\n\nsetup_stage:\n- not_started → user has not begun setup\n- in_progress → user partially completed setup\n- completed → setup finished\n\nReturn ONLY valid JSON.\n\nOUTPUT FORMAT\n\n{\n  \"query_type\": \"\",\n  \"urgency\": \"\",\n  \"setup_stage\": \"\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        256,
+        512
+      ],
+      "id": "07bdab9c-721d-4b50-888d-eabeb3953ae6",
+      "name": "Query Classifier"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are a helpful onboarding support assistant\nUser email: {{ $('Edit Fields').item.json.emailBody }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=You are an AI onboarding support assistant.\n\nYour job is to respond to user onboarding queries clearly and professionally.\n\nQUERY TYPE:\n{{ $('Query Classifier').item.json.output.query_type }}\n\nUser Name:\n{{ $('When Executed by Another Workflow').item.json.name }}\n\nUser Email:\n{{ $('When Executed by Another Workflow').item.json.emailBody }}\n\nKnowledge Base:\n{{ $json.output }}\n\nInstructions:\n- Answer the user’s question using the knowledge base.\n- Provide step-by-step instructions if required.\n- Keep the response concise (100–150 words).\n- Suggest the next 1–2 steps the user should take.\n- If the issue seems unresolved, offer further help.\n\nFormatting Rules:\n- The response MUST be valid HTML\n- Use <p> for paragraphs\n- Use <ol> for steps\n- Use <ul> for bullet points\n- Use <strong> for highlighting important actions\n- Do NOT use markdown (no ** or *)\n- Maintain proper spacing and readability\n\nStructure:\n1. Greeting (Hi {{name}})\n2. Acknowledge the issue\n3. Provide solution / steps\n4. Suggest next steps\n5. Friendly closing\n\nClosing (must always include):\nBest regards,<br>\nTeam e-IDEA Consultancy Services\n\nIMPORTANT:\nReturn ONLY valid JSON. Do NOT include any extra text.\n\nOutput format:\n\n{\n  \"subject\": \"string\",\n  \"response\": \"<valid HTML email>\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        1136,
+        512
+      ],
+      "id": "d73c7604-641c-40ba-9f6b-b90edfc190dc",
+      "name": "Reply Generator"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "\n{\n  \"subject\": \"string\",\n  \"response\": \"<valid HTML email>\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1280,
+        736
+      ],
+      "id": "1cfd11a0-e76f-42f4-bc41-a74588710ab6",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "trigger": [
+          "message",
+          "app_mention"
+        ],
+        "channelId": {
+          "__rl": true,
+          "value": "C0ALU0KMMR7",
+          "mode": "list",
+          "cachedResultName": "testing-on-boarding"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.slackTrigger",
+      "typeVersion": 1,
+      "position": [
+        -192,
+        -400
+      ],
+      "id": "8612954b-f292-48fd-a92f-469868e498d7",
+      "name": "Slack Trigger1",
+      "webhookId": "bc8eaa11-d10c-4527-b897-6df35afa0cf3",
+      "credentials": {
+        "slackApi": {
+          "id": "dD3hMv3ENDcjnF5P",
+          "name": "n8n-bot-testing"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "1864299d-c46a-4a62-a9ce-67320d74d9ce",
+              "leftValue": "={{ $json.bot_id }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        32,
+        -400
+      ],
+      "id": "f46bc589-c01c-4a9d-a28d-b2f65c01e3a8",
+      "name": "Filter Valid Human Reply"
+    },
+    {
+      "parameters": {
+        "authentication": "oAuth2",
+        "resource": "channel",
+        "operation": "replies",
+        "channelId": {
+          "__rl": true,
+          "value": "C0ALU0KMMR7",
+          "mode": "list",
+          "cachedResultName": "testing-on-boarding"
+        },
+        "ts": "={{ $json.thread_ts }}",
+        "filters": {}
+      },
+      "type": "n8n-nodes-base.slack",
+      "typeVersion": 2.4,
+      "position": [
+        256,
+        -400
+      ],
+      "id": "064919fe-9df7-4392-a1fe-24ee04a7be2e",
+      "name": "Fetch Thread Messages",
+      "webhookId": "e8d45ca4-7079-480d-97e7-4aecdd620e58",
+      "credentials": {
+        "slackOAuth2Api": {
+          "id": "KCuGXgtqiguEZGB1",
+          "name": "Slack account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      original_message: items[0].json.text,\n      latest_reply: items[items.length - 1].json.text\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        -400
+      ],
+      "id": "9995bae0-3e16-45f6-8d44-d95f79995b63",
+      "name": "Prepare Thread Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const original = items[0].json.original_message;\nconst reply = items[0].json.latest_reply.toLowerCase();\n\n// Extract\nconst thread_id = original.match(/Thread ID:\\s*([^\\n]+)/)[1].trim();\nconst name = original.match(/Name:\\s*([^\\n]+)/)[1].trim();\n\n// Status logic\nconst keywords = [\"done\", \"complete\", \"completed\", \"update\"];\n\nconst status = keywords.some(word => reply.includes(word))\n  ? \"done\"\n  : \"pending\";\n\nreturn [\n  {\n    json: {\n      thread_id,\n      name,\n      reply,\n      status\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        672,
+        -400
+      ],
+      "id": "5d02af0a-422f-4ab5-9303-6f9e8fdc6e98",
+      "name": "Extract Info & Detect Status"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "01a23f37-083c-4225-a841-14fe478a7c2f",
+              "leftValue": "={{ $json.status }}",
+              "rightValue": "done",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        944,
+        -416
+      ],
+      "id": "d53ebfa8-7d61-4723-80a2-f9f573855f4c",
+      "name": "Check If Issue Resolved"
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Thread_id": "={{ $('Information Extractor').item.json.output.threadid }}",
+            "onboarding_status": "=active",
+            "support_count": "0"
+          },
+          "matchingColumns": [
+            "Thread_id"
+          ],
+          "schema": [
+            {
+              "id": "Thread_id",
+              "displayName": "Thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Email_id",
+              "displayName": "Email_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "signup_date",
+              "displayName": "signup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_day",
+              "displayName": "current_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "onboarding_status",
+              "displayName": "onboarding_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "support_count",
+              "displayName": "support_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "paused_until",
+              "displayName": "paused_until",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email body",
+              "displayName": "Email body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Generated Reply",
+              "displayName": "Generated Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_interaction",
+              "displayName": "last_interaction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1184,
+        -432
+      ],
+      "id": "1b610013-6d17-44de-9420-07dd64be267a",
+      "name": "Update Onboarding Status in DB",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1136,
+        752
+      ],
+      "id": "8f0b8f93-0583-42c1-a7cc-0237fd2f35b6",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputSource": "jsonExample",
+        "jsonExample": "{\n  \"emailBody\":\"string\",\n  \"from\": \"string\",\n  \"subject\":\"string\",\n  \"threadID\":\"string\",\n  \"name\":\"string\",\n  \"Emailsummary\":\"string\"\n}\n"
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -560,
+        352
+      ],
+      "id": "c51911c9-d7b4-459a-b389-e32b50c6bd95",
+      "name": "When Executed by Another Workflow"
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "emailBody": " Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n",
+          "from": "thejohnwick540@gmail.com",
+          "subject": "Question about my account",
+          "threadID": "19d06748bbe4ccd8",
+          "name": "Sai Vignesh",
+          "Emailsummary": " Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Answer questions with a vector store": {
+      "ai_tool": [
+        [
+          {
+            "node": "RAG",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pinecone Vector Store": {
+      "ai_vectorStore": [
+        [
+          {
+            "node": "Answer questions with a vector store",
+            "type": "ai_vectorStore",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Pinecone Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "RAG",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "RAG": {
+      "main": [
+        [
+          {
+            "node": "Reply Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message1": {
+      "main": [
+        [
+          {
+            "node": "Append or update row in sheet1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Query Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Query Classifier",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Query Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Query Classifier": {
+      "main": [
+        [
+          {
+            "node": "RAG",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply Generator": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Reply Generator",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Slack Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Filter Valid Human Reply",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Valid Human Reply": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Fetch Thread Messages",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Thread Messages": {
+      "main": [
+        [
+          {
+            "node": "Prepare Thread Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Thread Data": {
+      "main": [
+        [
+          {
+            "node": "Extract Info & Detect Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Info & Detect Status": {
+      "main": [
+        [
+          {
+            "node": "Check If Issue Resolved",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check If Issue Resolved": {
+      "main": [
+        [
+          {
+            "node": "Update Onboarding Status in DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Reply Generator",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false,
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromAList",
+    "callerIds": "rA0EM5pFSEg12juP"
+  },
+  "versionId": "fc2ee09d-9f74-41ac-a3ca-a5237f6c48f1",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78009fc29414294678e81009d661eb841edc07c8d795d800a134b1c710f7805e"
+  },
+  "id": "7sFODOYa5MTIgOiR",
+  "tags": []
+}
