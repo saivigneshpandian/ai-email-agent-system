@@ -5,17 +5,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1354535146,
           "mode": "list",
           "cachedResultName": "onboarding_setup",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1354535146"
         },
         "filtersUI": {
           "values": [
@@ -38,7 +38,7 @@
       "alwaysOutputData": true,
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -103,7 +103,7 @@
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -130,7 +130,7 @@
       "name": "Pinecone Vector Store",
       "credentials": {
         "pineconeApi": {
-          "id": "94XPtRv732W8lWuj",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "onboarding"
         }
       }
@@ -147,7 +147,7 @@
       "name": "Embeddings Google Gemini",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -166,7 +166,7 @@
       "name": "Google Gemini Chat Model1",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -208,7 +208,7 @@
       "webhookId": "93187298-5eac-4d52-bd8e-a1cb429bcd6c",
       "credentials": {
         "gmailOAuth2": {
-          "id": "2ryKmXfniolvo6vA",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Gmail account"
         }
       }
@@ -218,17 +218,17 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1354535146,
           "mode": "list",
           "cachedResultName": "onboarding_setup",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1354535146"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -389,7 +389,7 @@
       "name": "Append or update row in sheet",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -420,7 +420,7 @@
       "webhookId": "cdfc4d83-d6b7-4160-bef3-badf3ea55e5b",
       "credentials": {
         "slackOAuth2Api": {
-          "id": "KCuGXgtqiguEZGB1",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Slack account 3"
         }
       }
@@ -430,17 +430,17 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1354535146,
           "mode": "list",
           "cachedResultName": "onboarding_setup",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1354535146"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -598,7 +598,7 @@
       "name": "Append or update row in sheet1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -617,7 +617,7 @@
       "name": "Google Gemini Chat Model3",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -756,7 +756,7 @@
       "webhookId": "bc8eaa11-d10c-4527-b897-6df35afa0cf3",
       "credentials": {
         "slackApi": {
-          "id": "dD3hMv3ENDcjnF5P",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "n8n-bot-testing"
         }
       }
@@ -820,7 +820,7 @@
       "webhookId": "e8d45ca4-7079-480d-97e7-4aecdd620e58",
       "credentials": {
         "slackOAuth2Api": {
-          "id": "KCuGXgtqiguEZGB1",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Slack account 3"
         }
       }
@@ -889,17 +889,17 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": 1354535146,
           "mode": "list",
           "cachedResultName": "onboarding_setup",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=1354535146"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -1057,7 +1057,7 @@
       "name": "Update Onboarding Status in DB",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -1076,7 +1076,7 @@
       "name": "Google Gemini Chat Model2",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -1096,20 +1096,6 @@
       "name": "When Executed by Another Workflow"
     }
   ],
-  "pinData": {
-    "When Executed by Another Workflow": [
-      {
-        "json": {
-          "emailBody": " Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n",
-          "from": "thejohnwick540@gmail.com",
-          "subject": "Question about my account",
-          "threadID": "19d06748bbe4ccd8",
-          "name": "Sai Vignesh",
-          "Emailsummary": " Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n"
-        }
-      }
-    ]
-  },
   "connections": {
     "Get row(s) in sheet": {
       "main": [
@@ -1396,7 +1382,7 @@
   "versionId": "fc2ee09d-9f74-41ac-a3ca-a5237f6c48f1",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "78009fc29414294678e81009d661eb841edc07c8d795d800a134b1c710f7805e"
+    "instanceId": "YOUR_INSTANCE_ID"
   },
   "id": "7sFODOYa5MTIgOiR",
   "tags": []

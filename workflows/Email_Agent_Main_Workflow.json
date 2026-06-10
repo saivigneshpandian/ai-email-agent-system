@@ -40,7 +40,7 @@
       "webhookId": "cd732340-99a8-47ef-959b-2847d5ea24e2",
       "credentials": {
         "gmailOAuth2": {
-          "id": "2ryKmXfniolvo6vA",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Gmail account"
         }
       }
@@ -62,17 +62,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1iDCzr2bK2ZegVVfyfV-JYw8jJrYHFbhl2zZk_hK25E4",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "product",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iDCzr2bK2ZegVVfyfV-JYw8jJrYHFbhl2zZk_hK25E4/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iDCzr2bK2ZegVVfyfV-JYw8jJrYHFbhl2zZk_hK25E4/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "options": {}
       },
@@ -86,7 +86,7 @@
       "name": "Product",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -109,7 +109,7 @@
       "name": "Memory",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "nhVjEPySilBOS2N1",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Docs account 3"
         }
       }
@@ -118,17 +118,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "options": {}
       },
@@ -142,7 +142,7 @@
       "name": "Database",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -172,7 +172,7 @@
       "name": "Gmail Trigger",
       "credentials": {
         "gmailOAuth2": {
-          "id": "2ryKmXfniolvo6vA",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Gmail account"
         }
       }
@@ -252,7 +252,7 @@
       "name": "Google Gemini Chat Model1",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -284,7 +284,7 @@
       "name": "Google Gemini Chat Model",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -326,17 +326,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "options": {}
       },
@@ -350,7 +350,7 @@
       "name": "Database1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -385,7 +385,7 @@
       "name": "LEAD SEGREGATION",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -420,7 +420,7 @@
       "name": "Company Info Extraction",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -460,17 +460,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1esvw9U5SlcAhKrlME6oxEuKealybH1Kr_vlCeP6_NSg",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "product",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1esvw9U5SlcAhKrlME6oxEuKealybH1Kr_vlCeP6_NSg/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1esvw9U5SlcAhKrlME6oxEuKealybH1Kr_vlCeP6_NSg/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "options": {}
       },
@@ -484,7 +484,7 @@
       "name": "Product1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -507,7 +507,7 @@
       "name": "Memory1",
       "credentials": {
         "googleDocsOAuth2Api": {
-          "id": "nhVjEPySilBOS2N1",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Docs account 3"
         }
       }
@@ -516,17 +516,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "options": {}
       },
@@ -540,7 +540,7 @@
       "name": "Database2",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -549,17 +549,17 @@
       "parameters": {
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "options": {}
       },
@@ -573,7 +573,7 @@
       "name": "Get row(s) in sheet in Google Sheets",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -599,7 +599,7 @@
       "webhookId": "cd732340-99a8-47ef-959b-2847d5ea24e2",
       "credentials": {
         "gmailOAuth2": {
-          "id": "2ryKmXfniolvo6vA",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Gmail account"
         }
       }
@@ -670,7 +670,7 @@
       "name": "Google Gemini Chat Model2",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -680,17 +680,17 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -874,7 +874,7 @@
       "name": "Storing_data",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -884,17 +884,17 @@
         "operation": "appendOrUpdate",
         "documentId": {
           "__rl": true,
-          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "value": "YOUR_SHEET_ID",
           "mode": "list",
           "cachedResultName": "DB",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit?usp=drivesdk"
         },
         "sheetName": {
           "__rl": true,
           "value": "gid=0",
           "mode": "list",
           "cachedResultName": "Sheet1",
-          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit#gid=0"
         },
         "columns": {
           "mappingMode": "defineBelow",
@@ -1082,7 +1082,7 @@
       "name": "Storing_data1",
       "credentials": {
         "googleSheetsOAuth2Api": {
-          "id": "nYDcMkZytv8nJoUQ",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Sheets account 2"
         }
       }
@@ -1103,7 +1103,7 @@
       "webhookId": "adcde6b1-3a52-4613-aefd-290ff3b0e280",
       "credentials": {
         "gmailOAuth2": {
-          "id": "2ryKmXfniolvo6vA",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Gmail account"
         }
       }
@@ -1124,7 +1124,7 @@
       "webhookId": "adcde6b1-3a52-4613-aefd-290ff3b0e280",
       "credentials": {
         "gmailOAuth2": {
-          "id": "2ryKmXfniolvo6vA",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Gmail account"
         }
       }
@@ -1159,7 +1159,7 @@
       "name": "Lead Segregation",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -1184,7 +1184,7 @@
       "webhookId": "89e72fbc-a5d6-4cf8-8ec6-caedec01efe8",
       "credentials": {
         "gmailOAuth2": {
-          "id": "2ryKmXfniolvo6vA",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Gmail account"
         }
       }
@@ -1238,7 +1238,7 @@
       "name": "Google Gemini Chat Model4",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -1295,7 +1295,7 @@
       "name": "Google Gemini Chat Model5",
       "credentials": {
         "googlePalmApi": {
-          "id": "ZcXEdUGZLVRtagFa",
+          "id": "YOUR_CREDENTIAL_ID",
           "name": "Google Gemini API"
         }
       }
@@ -1520,92 +1520,6 @@
       "name": "Call 'Email Agent - Customer Support - Sai'"
     }
   ],
-  "pinData": {
-    "Gmail Trigger": [
-      {
-        "json": {
-          "id": "19d06754f6329a02",
-          "threadId": "19d06748bbe4ccd8",
-          "labelIds": [
-            "UNREAD",
-            "IMPORTANT",
-            "SENT",
-            "INBOX"
-          ],
-          "sizeEstimate": 1059,
-          "headers": {
-            "mime-version": "MIME-Version: 1.0",
-            "date": "Date: Thu, 19 Mar 2026 19:47:24 +0530",
-            "message-id": "Message-ID: <CAGTDT5LVURXZmViAxYemg0ZpToZ2G1ntzgvTFfUH_FbZZVwtTg@mail.gmail.com>",
-            "subject": "Subject: Question about my account",
-            "from": "From: Sai Vignesh <thejohnwick540@gmail.com>",
-            "to": "To: Sai Vignesh <thejohnwick540@gmail.com>",
-            "content-type": "Content-Type: multipart/alternative; boundary=\"00000000000039fe4c064d613af3\""
-          },
-          "html": "<div dir=\"ltr\">Hi,<br><br>I have created my account successfully, but I am not sure what to do next.<br><br>Could you please explain the next steps after signup?<br><br>Thanks,  <br>Priya Sharma  <br>Sales Operations Manager  <br>Zenith Corp</div>\n",
-          "text": "Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n",
-          "textAsHtml": "<p>Hi,</p><p>I have created my account successfully, but I am not sure what to do next.</p><p>Could you please explain the next steps after signup?</p><p>Thanks,<br/>Priya Sharma<br/>Sales Operations Manager<br/>Zenith Corp</p>",
-          "subject": "Question about my account",
-          "date": "2026-03-19T14:17:24.000Z",
-          "to": {
-            "value": [
-              {
-                "address": "thejohnwick540@gmail.com",
-                "name": "Sai Vignesh"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Sai Vignesh</span> &lt;<a href=\"mailto:thejohnwick540@gmail.com\" class=\"mp_address_email\">thejohnwick540@gmail.com</a>&gt;</span>",
-            "text": "\"Sai Vignesh\" <thejohnwick540@gmail.com>"
-          },
-          "from": {
-            "value": [
-              {
-                "address": "thejohnwick540@gmail.com",
-                "name": "Sai Vignesh"
-              }
-            ],
-            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Sai Vignesh</span> &lt;<a href=\"mailto:thejohnwick540@gmail.com\" class=\"mp_address_email\">thejohnwick540@gmail.com</a>&gt;</span>",
-            "text": "\"Sai Vignesh\" <thejohnwick540@gmail.com>"
-          },
-          "messageId": "<CAGTDT5LVURXZmViAxYemg0ZpToZ2G1ntzgvTFfUH_FbZZVwtTg@mail.gmail.com>"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Email Summarization Chain1": [
-      {
-        "json": {
-          "response": {
-            "text": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process."
-          }
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ],
-    "Edit Fields3": [
-      {
-        "json": {
-          "response": {
-            "text": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process."
-          },
-          "emailBody": " Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n",
-          "from": "thejohnwick540@gmail.com",
-          "subject": "Question about my account",
-          "threadID": "19d06748bbe4ccd8",
-          "name": "Sai Vignesh",
-          "emailsummary": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process.",
-          "Emailsummary": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process.}"
-        },
-        "pairedItem": {
-          "item": 0
-        }
-      }
-    ]
-  },
   "connections": {
     "AI Agent": {
       "main": [
@@ -2072,7 +1986,7 @@
   "versionId": "00ae98d0-d62d-4e48-8eb0-67488ef0c44a",
   "meta": {
     "templateCredsSetupCompleted": true,
-    "instanceId": "78009fc29414294678e81009d661eb841edc07c8d795d800a134b1c710f7805e"
+    "instanceId": "YOUR_INSTANCE_ID"
   },
   "id": "rA0EM5pFSEg12juP",
   "tags": []
