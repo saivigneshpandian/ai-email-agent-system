@@ -81,13 +81,13 @@ Handles replies from users during onboarding. When a user responds to an onboard
 ## Screenshots
 
 ### Main Workflow
-![Main Workflow](screenshots/main-workflow.png)
+![Main Workflow](screenshots/Email_Agent_Main_Workflow.png)
 
 ### Onboarding Proactive
-![Onboarding Proactive](screenshots/onboarding-proactive.png)
+![Onboarding Proactive](screenshots/Email_Agent_Onboarding_Proactive.png)
 
 ### Onboarding Reactive
-![Onboarding Reactive](screenshots/onboarding-reactive.png)
+![Onboarding Reactive](screenshots/Email_Agent_Onboarding_Reactive.png)
 
 ---
 
