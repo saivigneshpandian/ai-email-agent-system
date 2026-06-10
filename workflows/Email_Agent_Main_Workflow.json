@@ -1,0 +1,2079 @@
+{
+  "name": "Email Agent - Main Workflow - Sai",
+  "nodes": [
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI Email Reply Agent,\nuser queires :\n{{ $json.text }}\n\n\nfor any queires from user you can use memory tool to answer them.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=ROLE\n\nYou are a human-like AI Email Reply Assistant.\n\nYour job is to read incoming emails, understand the user’s intent, check their history, and reply naturally — never sounding robotic or salesy.\n\nYou do not replace humans.\nYou always clearly state (once, briefly) that the AI only makes work easier and faster, not a replacement for people.\n\n\n\nINPUT YOU RECEIVE\n\n* User Email body → {{ $json.text }}\n* User Subject → {{ $json.headers.subject }}\n* User name → use name from email, else {{ $json.from.value[0].name }}\n* User email → {{ $json.from.value[0].address }}\n\n\n\nCORE RULES (VERY IMPORTANT)\n\n1. Always answer the user’s question FIRST\n\n* Read the email carefully\n* Address what they asked clearly and simply\n* Match their tone (curious, casual, professional, confused, etc.)\n\n\n\n2. Human statement\n\nInclude the sentence below ONLY:\n\n* On the first interaction (Number_of_mailed = 1)\n  OR\n* If the user expresses concern about automation replacing humans.\n\nSentence (use exactly once, no expansion):\n\n“This AI does not replace humans — it simply makes work easier and faster.”\n\nDo NOT repeat it in future replies.\n\n3.Mail Type Classification\n\n* Before replying, classify the email into one of the following categories:\n\n- Service Inquiry → User asking about product features, pricing, demo, capabilities.\n\n- Issue / Support → User reporting a problem, bug, technical difficulty.\n\n- Sales / Partnership → User exploring collaboration or business partnership.\n\n- General Question → User asking informational or clarification questions.\n\n- Other → If it does not fit the above categories.\n\n* This classification is for internal structuring only.\n* Do not mention the classification inside the email response.\n\n* Adapt tone and response style accordingly:\n\n* Service Inquiry → Informative and helpful.\n\n- Issue / Support → Calm, solution-focused, reassuring.\n\n- Sales / Partnership → Professional and structured.\n\n- General Question → Clear and friendly.\n\n\nTOOLS YOU CAN USE\n\n- Database tool → Use ONLY to:\n  * Check how many times this user’s email address has contacted us\n  * Retrieve brief summary of previous interaction (if available)\n  * Number_of_mailed represents the total number of incoming emails received from this user’s email address, including the current email.\n\n- Memory tool → Use ONLY to:\n  * Retrieve official product details for explanation\n  * Do NOT invent or assume features\n\n- Product tool → Use ONLY to:\n  * Retrieve official product links\n  * Use links exactly as provided\n\nIf Database tool returns empty or no record found → assume Number_of_mailed = 1.\n\n\n\nPRODUCTS\n\n- eAlly – Personal AI Assistant\n- eKigai – AI Business Development Agent\n- eLumi – AI Voice Agent\n\nTalk only about the product the user is asking for.\n\n\n\nHOW TO REPLY\n\n- Check with database tool\n- Read the email carefully and answer the user’s question first\n- Match the user’s tone (curious, professional, casual, etc.)\n- Keep the reply warm, simple, and natural\n- Never push the user to buy anything\n\n\nLINK-SHARING RULES (STRICT)\n\nIf user asks for demo → share demo link\nElse if Number_of_mailed >= 2 → share product link only\nElse → do not share any link\n\nCTA RULES (BASED ON LEAD TYPE)\n\n- Call-To-Action must match the classified Lead Type.\n- Soft CTA (Cold Leads)\nUse light, low-pressure language.\nExamples:\n“Happy to share examples if helpful.”\n“Let us know if you’d like to explore further.”\n\n- Do NOT push for calls or meetings.\n\n- Medium CTA (Warm Leads)\nEncourage discussion without pressure.\nExamples:\n“We can walk through this in a short discussion.”\n“Would a brief exploratory call help?”\n\n- Keep tone conversational and optional.\n\n-Strong CTA (Hot Leads)\nEncourage direct action.\nExamples:\n“Let’s schedule a 15–20 minute call to define scope.”\n“Please share a suitable time or we can send a booking link.”\n-Be confident but not aggressive.\n\nCTA APPLICATION RULE\n\n-CTA must be included naturally at the end of the response.\n-Do NOT label it as “CTA”.\n-Do NOT force urgency unless the user shows urgency.\n-Tone must remain aligned with user tone.\n\n\nSIGN-OFF RULE\n\n- Always end the email response with:\n\nBest regards,\nTeam e-IDEA Consultancy Services\n\n- Place this after the CTA sentence.\n- Do not modify the wording.\n\n\nTone & Writing Style\n\n- Sound like a real person\n- Warm, natural, relaxed\n- No marketing hype\n- No forced selling\n- No mentioning internal logic, tools, or databases\n\n\n\nAlways share links as:\n\n- If links are allowed, softly end with:\n\n“Before booking a demo, feel free to try our AI agent — the link is below.”\n\nDon't share link like this: <a href=\"https://eideacs.com/eally-personal-ai-assistant/\">\n\nShare like this (use any 1):\n[https://eideacs.com/eally-personal-ai-assistant/]\n(or)\n(https://eideacs.com/eally-personal-ai-assistant/)\n\n\nIMPORTANT RULES\n\n- Use Memory tool only for product information\n- Do not add extra features or assumptions\n- If the user is unclear, ask one polite clarification question\n- Do not mention tools, databases, or internal logic\n\n\n\nIf the user is unclear\n\n- Ask one polite clarification question\n- Do not share any links\n\n\n\nWORKFLOW (DO NOT SKIP)\n\n- Read and understand the email\n- Check email count and previous data about the user using Database tool\n- Identify the correct product\n- Answer using Memory tool only\n- Decide on link sharing using the rules\n- End in a friendly, open way\n\n\n\nOUTPUT FORMAT\n\n- You must return ONLY valid JSON.\n\n- Numbers must be returned as numeric values (not strings).\n- Do not include markdown, comments, or extra text outside JSON.\n\n\n{\n    \"Subject\": \"Subject here\",\n    \"Response\": \"Response here\",\n    \"Product\": \"Product here\",\n    \"Number_of_mailed\": 0,\n    \"Mail_Type\": \"string\"\n  \n}\n\nSubject: this will contain the subject for the reply mail and dont use Re\nResponse: this contain the content for the reply mail\nProduct: this will contain the product name\nNumber_of_mailed: this will contain the count history by checking with the Database\nMail_Type: Service Inquiry | Issue / Support | Sales / Partnership | General Question | Other"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2032,
+        256
+      ],
+      "id": "9fa82489-da36-4494-9193-38235951abbb",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger').item.json.from.value[0].address }}",
+        "subject": "={{ $json.output.Subject }}",
+        "emailType": "text",
+        "message": "={{ $json.output.Response }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2576,
+        304
+      ],
+      "id": "a2db0863-6aea-4950-8f8a-b6d1474197ea",
+      "name": "Send a message",
+      "webhookId": "cd732340-99a8-47ef-959b-2847d5ea24e2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "\n{\n    \"Subject\": \"Subject here\",\n    \"Response\": \"Response here\",\n    \"Product\": \"Product here\",\n    \"Number_of_mailed\": 0\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2368,
+        480
+      ],
+      "id": "2221123d-220a-483f-bcee-2f646d8937ec",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1iDCzr2bK2ZegVVfyfV-JYw8jJrYHFbhl2zZk_hK25E4",
+          "mode": "list",
+          "cachedResultName": "product",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iDCzr2bK2ZegVVfyfV-JYw8jJrYHFbhl2zZk_hK25E4/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1iDCzr2bK2ZegVVfyfV-JYw8jJrYHFbhl2zZk_hK25E4/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1984,
+        480
+      ],
+      "id": "47afb2d0-a8b8-4287-99f5-b073737c3b59",
+      "name": "Product",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get a document in Google Docs",
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1Csg2OJGLJtA-3sRycodL_y0SKp3QeV61i8LUWiBrPz4/edit?tab=t.0",
+        "simple": false
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2112,
+        480
+      ],
+      "id": "3d9edcf9-d744-45a9-96eb-4dd78eb8282f",
+      "name": "Memory",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "nhVjEPySilBOS2N1",
+          "name": "Google Docs account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2240,
+        480
+      ],
+      "id": "9add0239-b9c7-4dd9-8977-60505a582792",
+      "name": "Database",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "readStatus": "unread"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -672,
+        256
+      ],
+      "id": "3e8201e2-a0a7-47d4-ac54-152ec1beb9a9",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "2b9490be-a465-4351-8701-16c310ca9aa0",
+              "leftValue": "={{ $('Output Parser').item.json.Lead_Score }}",
+              "rightValue": "HOT LEAD",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "b39df9e2-8412-426d-9ea6-70e32f65ce51",
+              "leftValue": "={{ $('Output Parser').item.json.Classification }}",
+              "rightValue": 8,
+              "operator": {
+                "type": "number",
+                "operation": "gte"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        2576,
+        608
+      ],
+      "id": "77d4b392-4390-4456-9a04-4cbb9c4ac35e",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are an gmail ",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=you will receive the Hot Lead mails alone ,\nyour task is to explain the user mail detailly to your superior with their details\nuser name:{{ $('Gmail Trigger').item.json.from.value[0].name }}\nuser mail id:{{ $('Gmail Trigger').item.json.from.value[0].address }}\nuser message : {{ $('Gmail Trigger').item.json.text }}\n\n\n\ngive me in json format :\n{\n\t\"Subject\": \"Subject here\",\n\t\"Mail\": \"Mail here\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2800,
+        496
+      ],
+      "id": "a75fc105-0519-479d-970f-bab6061b72d8",
+      "name": "AI Agent1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2800,
+        720
+      ],
+      "id": "4423117a-1c31-46e9-a622-4beefa27e5a7",
+      "name": "Google Gemini Chat Model1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n\t\"Subject\": \"Subject here\",\n\t\"Mail\": \"Mail here\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2928,
+        720
+      ],
+      "id": "7fd2baef-2bb8-4f62-b632-e0e2692b1089",
+      "name": "Structured Output Parser1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1856,
+        480
+      ],
+      "id": "eda00e40-3fa0-40d0-957c-8baa8c7160d4",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "b08a3e0e-b94f-4e06-94a9-a9772355ebef",
+              "leftValue": "={{ $json.company_name }}",
+              "rightValue": "Individual",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        480,
+        432
+      ],
+      "id": "6d8f695b-6fae-4367-9d45-4d0605020970",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        1344,
+        480
+      ],
+      "id": "779e2a40-d22b-4d44-8874-a45ea42bdec7",
+      "name": "Database1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.0-flash-001",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.0-flash-001"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=mail:{{ $('Gmail Trigger').item.json.text }}\n\n\nTOOLS YOU CAN USE\n\n- Database tool → Use ONLY to:\n  * Number_of_mailed represents the total number of incoming emails received from this user’s email address, including the current email.\n\n\n\nClassify the following email as Hot, Warm, or Cold lead.\n\n\n- HOT LEAD (Strong Buying Intent)\n\nPricing & Budget (Score +3) : price, pricing, cost, budget, quotation, quote, estimate\n\nAction / Commitment (Score +3) : call, meeting, demo, discussion, schedule, connect\n\nUrgency / Timeline (Score +2) : urgent, immediately, asap, this week, deadline, timeline, start\n\nBuying Signals (Score +2) : proposal, contract, agreement, invoice, payment\n\n\n\n- WARM LEAD (Evaluation / Consideration)\n\nInformation Seeking (Score +2) : details, explain, overview, information, how it works\n\nFeature Evaluation (Score +2) : features, functionality, capabilities, integration\n\nComparison & Trust (Score +2) : comparison, difference, alternatives, competitors\n\nProof & Validation (Score +2) : case study, examples, portfolio, previous work, clients\n\nProblem / Use-Case Intent (Score +2) : need, looking for, want, require, help with\n\n\n\n- COLD LEAD (Early / Weak Interest)\n\nGeneric Openers (Score +1) : hi, hello, hey\n\nVague Messages (Score +1) : just checking, enquiry, inquiry, need info, want to know\n\nPassive Interest (Score +1) : looking around, exploring, browsing\n\n\n\nFINAL LEAD SCORE CLASSIFICATION (0–10 SCALE)\n\n8 – 10 → HOT LEAD\n4 – 7 → WARM LEAD\n0 – 3 → COLD LEAD\n\nNOTE\n\n- Scores from all matching categories must be ADDED together to calculate the final Lead_Score.\n- Each scoring category can be applied only once per email.\n- Do NOT treat general curiosity, research, or browsing as Problem / Use-Case or Information-Seeking intent.\n- If any Warm or Hot category is matched, ignore Cold Lead categories.\n\n\n\nOVERRIDE RULE (VERY IMPORTANT)\n\n- If the email explicitly states no current need, no specific requirement, no urgency, or that the user is just browsing or researching:\n\n- ALL Warm Lead categories must be ignored, even if similar words appear.\n\n\n\nEngagement Bonus\n\n- Apply ONLY if OVERRIDE rule does NOT apply.\n\nIf Number_of_mailed = 2 → add +2\nIf Number_of_mailed ≥ 3 → add +3\n\nThis is added AFTER base score calculation.\n\n\nReturn only JSON:\n\n{\n  \"Lead_Score\": number,\n  \"Classification\": \"string\"\n}\nNumber_of_mailed: this will contain the count history by checking with the Database\nClassification: this will tell what type of lead based on the user email (Hot Lead, Warm Lead, Cold Lead)"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "systemMessage": " your role is to segregate LEAD based on the mail "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        256
+      ],
+      "id": "f43e9798-3f9e-439d-a4d2-97de3e85befc",
+      "name": "LEAD SEGREGATION",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=organization website name:{{ $('Email Domain Classifier').item.json.domain }}\n\nYou are an expert information extraction expert.\n\nFrom the following website content, extract:\n\n1. Company Name\n2. Industry\n3. Main Products/Services\n4. Short 2-line summary\n\nReturn ONLY valid JSON in this format:\n\n{\n  \"Company_Name\": \"string\",\n  \"Industry\": \"string\",\n  \"Main_Products_Services\": \"string\",\n  \"summary\": \"string\"\n}\n\nDo not include markdown.\nDo not include extra text.\nbased on the content.\n\n"
+            }
+          ]
+        },
+        "builtInTools": {
+          "googleSearch": true
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        752
+      ],
+      "id": "f7515825-2d2f-4f87-bed2-3991102ba7fd",
+      "name": "Company Info Extraction",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an AI Email Reply Agent, \nuser queires :{{ $('Gmail Trigger').item.json.text }}\n\n\n",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=ROLE\n\nYou are a human-like AI Email Reply Assistant.\n\nYour job is to read incoming emails, understand the user’s intent, check their history, and reply naturally — never sounding robotic or salesy.\n\nYou do not replace humans.\nYou always clearly state (once, briefly) that the AI only makes work easier and faster, not a replacement for people.\n\nINPUT YOU RECEIVE\n\n* Email body → {{ $('Gmail Trigger').item.json.text }}\n* User Subject → {{ $('Gmail Trigger').item.json.headers.subject }}\n* User name → use name from email, else {{ $('Gmail Trigger').item.json.to.value[0].name }}\n* User email → {{ $('Gmail Trigger').item.json.to.value[0].address }}\n\nOrganizational Details (from company profiling node):**\n\n* Company_Name → {{ $json.Company_Name }}\n* Industry → {{ $json.Industry }}\n* Main_Products_Services → {{ $json.Main_Products_Services }}\n* Company_Summary → {{ $json.summary }}\n\nCORE RULES (VERY IMPORTANT)\n\n1. Always answer the user’s question FIRST\n\n* Read the email carefully\n* Address what they asked clearly and simply\n* Match their tone (curious, casual, professional, confused, etc.)\n\n2. Human statement\n\nInclude the sentence below ONLY:\n\n* On the first interaction (Number_of_mailed = 1)\n  OR\n* If the user expresses concern about automation replacing humans.\n\nSentence (use exactly once, no expansion):\n\n“This AI does not replace humans — it simply makes work easier and faster.”\n\nDo NOT repeat it in future replies.\n\n3. Organizational Context Rule\n\n* Use Company_Name naturally once in the response.\n* If relevant to the user’s question, subtly align your explanation with their Industry.\n* If helpful, refer briefly to their business context using Company_Summary.\n* Personalization must feel natural and conversational.\n* Do NOT overpraise the company.\n* Do NOT fabricate details beyond the provided Company_Summary.\n* Do NOT sound sales-heavy or artificial.\n\n\n4..Mail Type Classification\n\n* Before replying, classify the email into one of the following categories:\n\n- Service Inquiry → User asking about product features, pricing, demo, capabilities.\n\n- Issue / Support → User reporting a problem, bug, technical difficulty.\n\n- Sales / Partnership → User exploring collaboration or business partnership.\n\n- General Question → User asking informational or clarification questions.\n\n- Other → If it does not fit the above categories.\n\n* This classification is for internal structuring only.\n* Do not mention the classification inside the email response.\n\n* Adapt tone and response style accordingly:\n\n* Service Inquiry → Informative and helpful.\n\n- Issue / Support → Calm, solution-focused, reassuring.\n\n- Sales / Partnership → Professional and structured.\n\n- General Question → Clear and friendly.\n\n\nTOOLS YOU CAN USE\n\n* Database tool → Use ONLY to:\n\n  * Check how many times this user’s email address has contacted us\n  * Retrieve brief summary of previous interaction (if available)\n  * Number_of_mailed represents the total number of incoming emails received from this user’s email address, including the current email.\n\n* Memory tool → Use ONLY to:\n\n  * Retrieve official product details for explanation\n  * Do NOT invent or assume features\n\n* Product1 tool → Use ONLY to:\n\n  * Retrieve official product links\n  * Use links exactly as provided\n\nIf Database tool returns empty or no record found → assume Number_of_mailed = 1.\n\n\nPRODUCTS\n\n* eAlly – Personal AI Assistant\n* eKigai – AI Business Development Agent\n* eLumi – AI Voice Agent\n\nTalk only about the product the user is asking for.\n\nHOW TO REPLY\n\n* Check with database tool\n* Read the email carefully and answer the user’s question first\n* Match the user’s tone (curious, professional, casual, etc.)\n* Keep the reply warm, simple, and natural\n* Never push the user to buy anything\n\nLINK-SHARING RULES (STRICT)\n\nIf user asks for demo → share demo link\nElse if Number_of_mailed >= 2 → share product link only\nElse → do not share any link\n\nCTA RULES (BASED ON LEAD TYPE)\n\n* Call-To-Action must match the classified Lead Type.\n\n- Soft CTA (Cold Leads)\n\nUse light, low-pressure language.\nExamples:\n“Happy to share examples if helpful.”\n“Let us know if you’d like to explore further.”\n\nDo NOT push for calls or meetings.\n\n- Medium CTA (Warm Leads)\n\nEncourage discussion without pressure.\nExamples:\n“We can walk through this in a short discussion.”\n“Would a brief exploratory call help?”\n\nKeep tone conversational and optional.\n\n- Strong CTA (Hot Leads)\n\nEncourage direct action.\nExamples:\n“Let’s schedule a 15–20 minute call to define scope.”\n“Please share a suitable time or we can send a booking link.”\n\nBe confident but not aggressive.\n\nCTA APPLICATION RULE\n\n* CTA must be included naturally at the end of the response.\n* Do NOT label it as “CTA”.\n* Do NOT force urgency unless the user shows urgency.\n* Tone must remain aligned with user tone.\n\nSIGN-OFF RULE\n\nAlways end the email response with:\n\nBest regards,\nTeam e-IDEA Consultancy Services\n\nPlace this after the CTA sentence.\nDo not modify the wording.\n\nTone & Writing Style\n\n* Sound like a real person\n* Warm, natural, relaxed\n* No marketing hype\n* No forced selling\n* No mentioning internal logic, tools, or databases\n\nWORKFLOW (DO NOT SKIP)\n\n* Read and understand the email\n* Check email count and previous data about the user using Database tool\n* Identify the correct product\n* Answer using Memory tool only\n* Use the provided company details to personalize the reply subtly\n* Decide on link sharing using the rules\n* End in a friendly, open way\n\nOUTPUT FORMAT\n\nYou must return ONLY valid JSON.\n\nNumbers must be returned as numeric values (not strings).\nDo not include markdown, comments, or extra text outside JSON.\n\n\n{\n    \"Subject\": \"Subject here\",\n    \"Response\": \"Response here\",\n    \"Product\": \"Product here\",\n    \"Number_of_mailed\": 0,\n    \"Mail_Type\": \"string\"\n  \n}\nSubject: this will contain the subject for the reply mail and dont use Re\nResponse: this contain the content for the reply mail\nProduct: this will contain the product name\nNumber_of_mailed: this will contain the count history by checking with the Database\nMail_Type: Service Inquiry | Issue / Support | Sales / Partnership | General Question | Other"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2032,
+        752
+      ],
+      "id": "3722b9a2-8d5e-4c79-80e2-d122d2cb85fe",
+      "name": "AI Agent2"
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "\n{\n    \"Subject\": \"Subject here\",\n    \"Response\": \"Response here\",\n    \"Product\": \"Product here\",\n    \"Number_of_mailed\": 0,\n    \"Mail_Type\": \"string\"\n  \n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2576,
+        976
+      ],
+      "id": "d20a58f5-4aaa-4fea-b188-9059658123f8",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1esvw9U5SlcAhKrlME6oxEuKealybH1Kr_vlCeP6_NSg",
+          "mode": "list",
+          "cachedResultName": "product",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1esvw9U5SlcAhKrlME6oxEuKealybH1Kr_vlCeP6_NSg/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1esvw9U5SlcAhKrlME6oxEuKealybH1Kr_vlCeP6_NSg/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2192,
+        976
+      ],
+      "id": "f748a2aa-88b6-457c-92fa-6e0480b27328",
+      "name": "Product1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "descriptionType": "manual",
+        "toolDescription": "Get a document in Google Docs",
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1Csg2OJGLJtA-3sRycodL_y0SKp3QeV61i8LUWiBrPz4/edit?tab=t.0",
+        "simple": false
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2320,
+        976
+      ],
+      "id": "babc364d-aa70-4a10-9551-55e66ca7f551",
+      "name": "Memory1",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "nhVjEPySilBOS2N1",
+          "name": "Google Docs account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2448,
+        976
+      ],
+      "id": "4ca6b111-76af-471b-91d2-9f4a6b3260f4",
+      "name": "Database2",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        976,
+        880
+      ],
+      "id": "4849e66b-328a-4a75-92bc-e89c3e36aa4c",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Gmail Trigger').item.json.from.value[0].address }}",
+        "subject": "={{ $json.output.Subject }}",
+        "emailType": "text",
+        "message": "={{ $json.output.Response }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2784,
+        896
+      ],
+      "id": "6fb59d07-bf3d-4dea-b6a1-72a6c17f7a14",
+      "name": "Send a message2",
+      "webhookId": "cd732340-99a8-47ef-959b-2847d5ea24e2",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Personal email domains\nconst personalDomains = [\n  'gmail.com', 'yahoo.com', 'outlook.com', 'hotmail.com',\n  'icloud.com', 'protonmail.com', 'aol.com', \n  'mail.com', 'yandex.com', 'live.com', 'msn.com'\n];\n\nconst results = [];\n\nfor (const item of $input.all()) {\n  let email = '';\n  \n  // Try different ways to extract email from Gmail structure\n  const fromField = item.json.from;\n  \n  if (fromField) {\n    // Check if from.value exists (Gmail API format)\n    if (fromField.value && Array.isArray(fromField.value) && fromField.value.length > 0) {\n      email = fromField.value[0].address || '';\n    }\n    // Check if from is a string\n    else if (typeof fromField === 'string') {\n      if (fromField.includes('<')) {\n        email = fromField.split('<')[1].split('>')[0];\n      } else {\n        email = fromField;\n      }\n    }\n  }\n  \n  email = email.toLowerCase().trim();\n  \n  // Extract domain and classify\n  let emailType = 'unknown';\n  let domain = '';\n  let companyName = 'Unknown';\n  \n  if (email && email.includes('@')) {\n    domain = email.split('@')[1];\n    \n    // Classify email type\n    if (personalDomains.includes(domain)) {\n      emailType = 'personal';\n      companyName = 'Individual';\n    } else {\n      emailType = 'organizational';\n      companyName = domain.split('.')[0].charAt(0).toUpperCase() + domain.split('.')[0].slice(1);\n    }\n  }\n  \n  // Keep all original data + add classification\n  results.push({\n    json: {\n      ...item.json,\n      email_type: emailType,\n      domain: domain,\n      company_name: companyName,\n      email_address: email\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -448,
+        256
+      ],
+      "id": "b3b88016-3b36-4004-88b6-499597762c1d",
+      "name": "Email Domain Classifier"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content.parts[0].text;\n\n// Remove markdown if present\nconst cleaned = raw\n  .replace(/```json/g, \"\")\n  .replace(/```/g, \"\")\n  .trim();\n\n// Parse JSON\nconst parsed = JSON.parse(cleaned);\n\nreturn [parsed];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1056,
+        752
+      ],
+      "id": "d24e9a96-6beb-4764-a875-8e4868b8ae23",
+      "name": "Output Parser"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content.parts[0].text;\n\n// Remove markdown if present\nconst cleaned = raw\n  .replace(/```json/g, \"\")\n  .replace(/```/g, \"\")\n  .trim();\n\n// Parse JSON\nconst parsed = JSON.parse(cleaned);\n\nreturn [parsed];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        352
+      ],
+      "id": "b0b46b43-c6d8-4e4f-bcd8-a01863ce4fa6",
+      "name": "Output Parser1"
+    },
+    {
+      "parameters": {
+        "jsCode": "const raw = $input.first().json.content.parts[0].text;\n\n// Remove markdown if present\nconst cleaned = raw\n  .replace(/```json/g, \"\")\n  .replace(/```/g, \"\")\n  .trim();\n\n// Parse JSON\nconst parsed = JSON.parse(cleaned);\n\nreturn [parsed];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1632,
+        752
+      ],
+      "id": "16e959b1-94ed-42bd-9fde-be3b1f44b7e1",
+      "name": "Output Parser2"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        2064,
+        976
+      ],
+      "id": "ce14d796-4d97-4051-a0d0-5ab5a97f2544",
+      "name": "Google Gemini Chat Model2",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ai send": "={{ $('AI Agent').item.json.output.Response }}",
+            "ID": "={{ $('Gmail Trigger').item.json.id }}",
+            "User MSG": "={{ $('Gmail Trigger').item.json.text }}",
+            "Email": "={{ $('Gmail Trigger').item.json.from.value[0].address }}",
+            "Name": "={{ $('Gmail Trigger').item.json.from.value[0].name }}",
+            "Product": "={{ $('AI Agent').item.json.output.Product }}",
+            "no_times": "={{ $('AI Agent').item.json.output.Number_of_mailed }}",
+            "Type of Lead": "={{ $('AI Agent').item.json.output.Type_of_lead }}",
+            "Type of user": "={{ $('Email Domain Classifier').item.json.company_name }}",
+            "Type of mail": "={{ $('AI Agent').item.json.output.Number_of_mailed }}",
+            "User_Subject": "={{ $('Gmail Trigger').item.json.subject }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type of mail",
+              "displayName": "Type of mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product",
+              "displayName": "Product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type of user",
+              "displayName": "Type of user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type of Lead",
+              "displayName": "Type of Lead",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "no_times",
+              "displayName": "no_times",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company_Name",
+              "displayName": "Company_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Main_Products_Services",
+              "displayName": "Main_Products_Services",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "User_Subject",
+              "displayName": "User_Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "User MSG",
+              "displayName": "User MSG",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ai send",
+              "displayName": "Ai send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2864,
+        304
+      ],
+      "id": "a78dd093-7baf-4531-8c96-cbadd024bd06",
+      "name": "Storing_data",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Ai send": "=SUBJECT :\n{{ $('AI Agent2').item.json.output.Response }}",
+            "ID": "={{ $('Gmail Trigger').item.json.id }}",
+            "User MSG": "={{ $('Gmail Trigger').item.json.text }}",
+            "Email": "={{ $('Gmail Trigger').item.json.from.value[0].address }}",
+            "Name": "={{ $('Gmail Trigger').item.json.from.value[0].name }}",
+            "Product": "={{ $('AI Agent2').item.json.output.Product }}",
+            "no_times": "={{ $('AI Agent2').item.json.output.Number_of_mailed }}",
+            "Type of Lead": "={{ $('Output Parser').item.json.Classification }}",
+            "Company_Name": "={{ $('Output Parser2').item.json.Company_Name }}",
+            "Industry": "={{ $('Output Parser2').item.json.Industry }}",
+            "summary": "={{ $('Output Parser2').item.json.summary }}",
+            "Main_Products_Services": "={{ $('Output Parser2').item.json.Main_Products_Services }}",
+            "Type of user": "={{ $('Email Domain Classifier').item.json.company_name }}",
+            "Type of mail": "={{ $('AI Agent2').item.json.output.Number_of_mailed }}",
+            "User_Subject": "={{ $('Gmail Trigger').item.json.headers.subject }}"
+          },
+          "matchingColumns": [
+            "Email"
+          ],
+          "schema": [
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type of mail",
+              "displayName": "Type of mail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Product",
+              "displayName": "Product",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type of user",
+              "displayName": "Type of user",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type of Lead",
+              "displayName": "Type of Lead",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "no_times",
+              "displayName": "no_times",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Company_Name",
+              "displayName": "Company_Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Industry",
+              "displayName": "Industry",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Main_Products_Services",
+              "displayName": "Main_Products_Services",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "summary",
+              "displayName": "summary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "User_Subject",
+              "displayName": "User_Subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "User MSG",
+              "displayName": "User MSG",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Ai send",
+              "displayName": "Ai send",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        3072,
+        896
+      ],
+      "id": "cbd929b0-51f5-4f16-9460-1a957d6eab7e",
+      "name": "Storing_data1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3152,
+        304
+      ],
+      "id": "eae0b6e2-fccf-43ed-b15d-6cfe1ae00d0c",
+      "name": "Mark as read",
+      "webhookId": "adcde6b1-3a52-4613-aefd-290ff3b0e280",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "markAsRead",
+        "messageId": "={{ $('Gmail Trigger').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3360,
+        896
+      ],
+      "id": "1ba3d41c-49eb-4082-8477-4d7540842473",
+      "name": "Mark as read2",
+      "webhookId": "adcde6b1-3a52-4613-aefd-290ff3b0e280",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-2.5-flash",
+          "mode": "list",
+          "cachedResultName": "models/gemini-2.5-flash"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=mail:{{ $('Gmail Trigger').item.json.text }}\n\n\nTOOLS YOU CAN USE\n\n- Database tool → Use ONLY to:\n  * Number_of_mailed represents the total number of incoming emails received from this user’s email address, including the current email.\n\n\n\nClassify the following email as Hot, Warm, or Cold lead.\n\n\n- HOT LEAD (Strong Buying Intent)\n\nPricing & Budget (Score +3) : price, pricing, cost, budget, quotation, quote, estimate\n\nAction / Commitment (Score +3) : call, meeting, demo, discussion, schedule, connect\n\nUrgency / Timeline (Score +2) : urgent, immediately, asap, this week, deadline, timeline, start\n\nBuying Signals (Score +2) : proposal, contract, agreement, invoice, payment\n\n\n\n- WARM LEAD (Evaluation / Consideration)\n\nInformation Seeking (Score +2) : details, explain, overview, information, how it works\n\nFeature Evaluation (Score +2) : features, functionality, capabilities, integration\n\nComparison & Trust (Score +2) : comparison, difference, alternatives, competitors\n\nProof & Validation (Score +2) : case study, examples, portfolio, previous work, clients\n\nProblem / Use-Case Intent (Score +2) : need, looking for, want, require, help with\n\n\n\n- COLD LEAD (Early / Weak Interest)\n\nGeneric Openers (Score +1) : hi, hello, hey\n\nVague Messages (Score +1) : just checking, enquiry, inquiry, need info, want to know\n\nPassive Interest (Score +1) : looking around, exploring, browsing\n\n\n\nFINAL LEAD SCORE CLASSIFICATION (0–10 SCALE)\n\n8 – 10 → HOT LEAD\n4 – 7 → WARM LEAD\n0 – 3 → COLD LEAD\n\nNOTE\n\n- Scores from all matching categories must be ADDED together to calculate the final Lead_Score.\n- Each scoring category can be applied only once per email.\n- Do NOT treat general curiosity, research, or browsing as Problem / Use-Case or Information-Seeking intent.\n- If any Warm or Hot category is matched, ignore Cold Lead categories.\n\n\n\nOVERRIDE RULE (VERY IMPORTANT)\n\n- If the email explicitly states no current need, no specific requirement, no urgency, or that the user is just browsing or researching:\n\n- ALL Warm Lead categories must be ignored, even if similar words appear.\n\n\n\nEngagement Bonus\n\n- Apply ONLY if OVERRIDE rule does NOT apply.\n\nIf Number_of_mailed = 2 → add +2\nIf Number_of_mailed ≥ 3 → add +3\n\nThis is added AFTER base score calculation.\n\n\nReturn only JSON:\n\n{\n  \"Lead_Score\": number,\n  \"Classification\": \"string\"\n}\nNumber_of_mailed: this will contain the count history by checking with the Database\nClassification: this will tell what type of lead based on the user email (Hot Lead, Warm Lead, Cold Lead)"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {
+          "systemMessage": " your role is to segregate LEAD based on the mail "
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.1,
+      "position": [
+        704,
+        656
+      ],
+      "id": "53f330a0-9026-43b3-af5b-59f64d4f9f3e",
+      "name": "Lead Segregation",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "saivigneshpandian2005@gmail.com",
+        "subject": "={{ $json.output.Subject }}",
+        "message": "={{ $json.output.Mail }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        3152,
+        608
+      ],
+      "id": "377eda15-bf86-43f7-898d-9b0692b05bcc",
+      "name": "Send a message1",
+      "webhookId": "89e72fbc-a5d6-4cf8-8ec6-caedec01efe8",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "inputText": "=You must classify the following email::\n{{ $('Email Domain Classifier').item.json.text }}\n",
+        "categories": {
+          "categories": [
+            {
+              "category": "customer_support",
+              "description": "Emails where the sender reports an issue, malfunction, integration problem, billing concern, order problem, refund request, or requires assistance resolving a product or service-related matter"
+            },
+            {
+              "category": "spam",
+              "description": "Emails that are promotional, irrelevant, suspicious, or unsolicited. Includes marketing offers, sales pitches, SEO proposals, cryptocurrency schemes, phishing attempts, bulk outreach, or any content unrelated to customer support."
+            },
+            {
+              "category": "onboarding_setup",
+              "description": "Emails from new customers requesting help with initial setup, account configuration, integrations, or guidance on how to start using the platform."
+            }
+          ]
+        },
+        "options": {
+          "multiClass": false,
+          "fallback": "other",
+          "systemPromptTemplate": "=EMAIL CLASSIFICATION SYSTEM\n\nYou must classify the email into one of the following categories:\n\n1. spam\n2. onboarding_setup\n3. customer_support\n4. other\n\n1. SPAM DETECTION (CHECK FIRST)\n\nClassify as spam if the email contains ANY of the following:\n\n* Promotional offers unrelated to the product\n* Marketing messages\n* Unsolicited sales pitches\n* Suspicious links\n* Requests for unrelated partnerships\n* Cryptocurrency or investment schemes\n* SEO or website improvement offers\n* Bulk outreach messages\n* Irrelevant advertisements\n* Phishing-like language\n* Requests for sensitive information\n\nIf the email is clearly promotional, irrelevant, or suspicious → classify as **spam**.\n\nSpam must override all other classifications.\n\n2. ONBOARDING SETUP DETECTION\n\nIf the email is NOT spam, classify as **onboarding_setup** if the sender is a new user asking how to start using the product or requesting help with initial setup.\n\nExamples include:\n\n* Asking how to get started\n* Questions about first-time setup\n* Connecting integrations or accounts\n* Creating the first project/workflow\n* Understanding basic product features\n* Requests for onboarding guidance or tutorials\n\nExample phrases:\n\n* \"I just signed up, what should I do first?\"\n* \"How do I set up my account?\"\n* \"Can you guide me through the setup?\"\n* \"How do I connect my integration?\"\n\nIf the email is about **getting started, setup guidance, or first-time product usage** → classify as **onboarding_setup**.\n\n3. CUSTOMER SUPPORT DETECTION\n\nIf NOT spam and NOT onboarding_setup, classify as **customer_support** if the email includes ANY of the following:\n\n* Product not working\n* Sync issues or integration problems\n* Data inconsistency\n* Configuration errors\n* Reporting errors\n* Login problems\n* System malfunction\n* Operational impact\n* Billing issues\n* Refund requests\n* Order issues\n* Assistance required to fix a problem\n\nIf the customer reports an issue, malfunction, delay, billing concern, or requires help resolving a problem → classify as **customer_support**.\n\n4. OTHER\n\nIf the email is NOT spam, NOT onboarding_setup, and NOT customer_support, and is purely informational, exploratory, partnership inquiry, or a general question → classify as **other**.\n\n\n\nReturn only the category name:\n\nspam\nonboarding_setup\ncustomer_support\nother\n\nNo explanations.\nNo additional text.\nReturn only one word.\n",
+          "enableAutoFixing": true
+        }
+      },
+      "id": "a2b2e9aa-89c0-45b1-8230-1d406d75fbef",
+      "name": "Email Classifier",
+      "type": "@n8n/n8n-nodes-langchain.textClassifier",
+      "position": [
+        128,
+        256
+      ],
+      "typeVersion": 1
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        192,
+        544
+      ],
+      "id": "51d9df6f-2271-4b0c-a6e8-641cd722412d",
+      "name": "Google Gemini Chat Model4",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"emailBody\":\" {{ $('Gmail Trigger').item.json.text }}\",\n  \"from\": \"{{ $('Email Domain Classifier').item.json.from.value[0].address }}\",\n  \"subject\":\"{{ $('Gmail Trigger').item.json.subject }}\",\n  \"threadID\":\"{{ $('Gmail Trigger').item.json.threadId }}\",\n  \"name\":\"{{ $('Gmail Trigger').item.json.from.value[0].name }}\",\n  \"emailsummary\":\"{{ $('Email Summarization Chain1').item.json.response.text }}\",\n  \"Emailsummary\":\"{{ $('Email Summarization Chain1').item.json.response.text }}}\"\n}\n",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        160
+      ],
+      "id": "e6de212b-4386-4023-9025-ef87331863c0",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "operationMode": "nodeInputBinary",
+        "options": {
+          "binaryDataKey": "={{ $json.text }}",
+          "summarizationMethodAndPrompts": {
+            "values": {
+              "combineMapPrompt": "=Write a concise summary of the following in max 100 words:\n\n\"{{ $json.text }}\"\n",
+              "prompt": "=Write a concise summary of the following in max 100 words:\n\n\"{{ $json.text }}\"\n\nDo not enter the total number of words used."
+            }
+          }
+        }
+      },
+      "id": "16faa70a-41bd-441c-8d8c-4349d2e3e66f",
+      "name": "Email Summarization Chain1",
+      "type": "@n8n/n8n-nodes-langchain.chainSummarization",
+      "position": [
+        -224,
+        256
+      ],
+      "typeVersion": 2
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        480
+      ],
+      "id": "aa38971b-2ca4-4106-92f5-c7e600a99386",
+      "name": "Google Gemini Chat Model5",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        192,
+        1056
+      ],
+      "id": "44e9bdff-d036-418c-9f7e-07f111ba93b0",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "={\n  \"emailBody\":\" {{ $('Gmail Trigger').item.json.text }}\",\n  \"from\": \"{{ $('Email Domain Classifier').item.json.from.value[0].address }}\",\n  \"subject\":\"{{ $('Gmail Trigger').item.json.subject }}\",\n  \"threadID\":\"{{ $('Gmail Trigger').item.json.threadId }}\",\n  \"name\":\"{{ $('Gmail Trigger').item.json.from.value[0].name }}\",\n  \"emailsummary\":\"{{ $('Email Summarization Chain1').item.json.response.text }}\",\n  \"Emailsummary\":\"{{ $('Email Summarization Chain1').item.json.response.text }}}\"\n}\n",
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        1056
+      ],
+      "id": "dc525821-be08-4cae-a3ff-92bdf8e34622",
+      "name": "Edit Fields3"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "7sFODOYa5MTIgOiR",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/7sFODOYa5MTIgOiR",
+          "cachedResultName": "Email Agent - onboarding_setup(REACTIVE ) - Sai"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "emailBody": "={{ $json.emailBody }}",
+            "from": "={{ $json.from }}",
+            "subject": "={{ $json.subject }}",
+            "threadID": "={{ $json.threadID }}",
+            "name": "={{ $json.name }}",
+            "Emailsummary": "={{ $json.emailBody }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "threadID",
+              "displayName": "threadID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Emailsummary",
+              "displayName": "Emailsummary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": true
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        688,
+        1056
+      ],
+      "id": "cda90deb-26e3-412f-a84b-ca612226a9cc",
+      "name": "Call 'Email Agent - onboarding_setup - Sai'"
+    },
+    {
+      "parameters": {
+        "workflowId": {
+          "__rl": true,
+          "value": "syOOOlWKnZJowMw8",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/syOOOlWKnZJowMw8",
+          "cachedResultName": "Email Agent - Customer Support - Sai"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "emailBody": "={{ $json.emailBody }}",
+            "from": "={{ $json.from }}",
+            "subject": "={{ $json.subject }}",
+            "threadID": "={{ $json.threadID }}",
+            "name": "={{ $json.name }}",
+            "Emailsummary": "={{ $json.emailsummary }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "emailBody",
+              "displayName": "emailBody",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "from",
+              "displayName": "from",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "subject",
+              "displayName": "subject",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "threadID",
+              "displayName": "threadID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "name",
+              "displayName": "name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            },
+            {
+              "id": "Emailsummary",
+              "displayName": "Emailsummary",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string",
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": true,
+          "convertFieldsToString": true
+        },
+        "options": {
+          "waitForSubWorkflow": "={{ true }}"
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflow",
+      "typeVersion": 1.3,
+      "position": [
+        768,
+        160
+      ],
+      "id": "d5bef204-0845-4b4b-8fcb-aa9a37048c48",
+      "name": "Call 'Email Agent - Customer Support - Sai'"
+    }
+  ],
+  "pinData": {
+    "Gmail Trigger": [
+      {
+        "json": {
+          "id": "19d06754f6329a02",
+          "threadId": "19d06748bbe4ccd8",
+          "labelIds": [
+            "UNREAD",
+            "IMPORTANT",
+            "SENT",
+            "INBOX"
+          ],
+          "sizeEstimate": 1059,
+          "headers": {
+            "mime-version": "MIME-Version: 1.0",
+            "date": "Date: Thu, 19 Mar 2026 19:47:24 +0530",
+            "message-id": "Message-ID: <CAGTDT5LVURXZmViAxYemg0ZpToZ2G1ntzgvTFfUH_FbZZVwtTg@mail.gmail.com>",
+            "subject": "Subject: Question about my account",
+            "from": "From: Sai Vignesh <thejohnwick540@gmail.com>",
+            "to": "To: Sai Vignesh <thejohnwick540@gmail.com>",
+            "content-type": "Content-Type: multipart/alternative; boundary=\"00000000000039fe4c064d613af3\""
+          },
+          "html": "<div dir=\"ltr\">Hi,<br><br>I have created my account successfully, but I am not sure what to do next.<br><br>Could you please explain the next steps after signup?<br><br>Thanks,  <br>Priya Sharma  <br>Sales Operations Manager  <br>Zenith Corp</div>\n",
+          "text": "Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n",
+          "textAsHtml": "<p>Hi,</p><p>I have created my account successfully, but I am not sure what to do next.</p><p>Could you please explain the next steps after signup?</p><p>Thanks,<br/>Priya Sharma<br/>Sales Operations Manager<br/>Zenith Corp</p>",
+          "subject": "Question about my account",
+          "date": "2026-03-19T14:17:24.000Z",
+          "to": {
+            "value": [
+              {
+                "address": "thejohnwick540@gmail.com",
+                "name": "Sai Vignesh"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Sai Vignesh</span> &lt;<a href=\"mailto:thejohnwick540@gmail.com\" class=\"mp_address_email\">thejohnwick540@gmail.com</a>&gt;</span>",
+            "text": "\"Sai Vignesh\" <thejohnwick540@gmail.com>"
+          },
+          "from": {
+            "value": [
+              {
+                "address": "thejohnwick540@gmail.com",
+                "name": "Sai Vignesh"
+              }
+            ],
+            "html": "<span class=\"mp_address_group\"><span class=\"mp_address_name\">Sai Vignesh</span> &lt;<a href=\"mailto:thejohnwick540@gmail.com\" class=\"mp_address_email\">thejohnwick540@gmail.com</a>&gt;</span>",
+            "text": "\"Sai Vignesh\" <thejohnwick540@gmail.com>"
+          },
+          "messageId": "<CAGTDT5LVURXZmViAxYemg0ZpToZ2G1ntzgvTFfUH_FbZZVwtTg@mail.gmail.com>"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Email Summarization Chain1": [
+      {
+        "json": {
+          "response": {
+            "text": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process."
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Edit Fields3": [
+      {
+        "json": {
+          "response": {
+            "text": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process."
+          },
+          "emailBody": " Hi,\n\nI have created my account successfully, but I am not sure what to do next.\n\nCould you please explain the next steps after signup?\n\nThanks,\nPriya Sharma\nSales Operations Manager\nZenith Corp\n",
+          "from": "thejohnwick540@gmail.com",
+          "subject": "Question about my account",
+          "threadID": "19d06748bbe4ccd8",
+          "name": "Sai Vignesh",
+          "emailsummary": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process.",
+          "Emailsummary": "Priya Sharma, Sales Operations Manager at Zenith Corp, has successfully created her account but is unsure of the next steps. She is requesting an explanation of the actions to take after completing the signup process.}"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        [
+          {
+            "node": "Storing_data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Database": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Email Domain Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent1": {
+      "main": [
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model1": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser1": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "LEAD SEGREGATION",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Lead Segregation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Database1": {
+      "ai_tool": [
+        [
+          {
+            "node": "LEAD SEGREGATION",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LEAD SEGREGATION": {
+      "main": [
+        [
+          {
+            "node": "Output Parser1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Company Info Extraction": {
+      "main": [
+        [
+          {
+            "node": "Output Parser2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent2": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send a message2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Product1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Memory1": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Database2": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Lead Segregation",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message2": {
+      "main": [
+        [
+          {
+            "node": "Storing_data1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Domain Classifier": {
+      "main": [
+        [
+          {
+            "node": "Email Summarization Chain1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Parser": {
+      "main": [
+        [
+          {
+            "node": "Company Info Extraction",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Parser1": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Output Parser2": {
+      "main": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model2": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent2",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Storing_data": {
+      "main": [
+        [
+          {
+            "node": "Mark as read",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Storing_data1": {
+      "main": [
+        [
+          {
+            "node": "Mark as read2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Lead Segregation": {
+      "main": [
+        [
+          {
+            "node": "Output Parser",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Classifier": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [],
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model4": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email Classifier",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "Call 'Email Agent - Customer Support - Sai'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model5": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Email Summarization Chain1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Email Summarization Chain1": {
+      "main": [
+        [
+          {
+            "node": "Email Classifier",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields3",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields3": {
+      "main": [
+        [
+          {
+            "node": "Call 'Email Agent - onboarding_setup - Sai'",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Email Agent - onboarding_setup - Sai'": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "00ae98d0-d62d-4e48-8eb0-67488ef0c44a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78009fc29414294678e81009d661eb841edc07c8d795d800a134b1c710f7805e"
+  },
+  "id": "rA0EM5pFSEg12juP",
+  "tags": []
+}
