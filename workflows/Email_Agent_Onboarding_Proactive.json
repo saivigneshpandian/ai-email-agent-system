@@ -1,0 +1,1493 @@
+{
+  "name": "Email Agent - onboarding_setup (Proactive) - Sai",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        608,
+        240
+      ],
+      "id": "7249d8a0-fc20-4b0e-adce-1bbe02876d56",
+      "name": "Google Gemini Chat Model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"subject\": \"string\",\n  \"response\": \"HTML formatted email\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        800,
+        208
+      ],
+      "id": "d16e84ca-e285-49c8-bdc2-2196ea0c5956",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "seconds"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "e8677f77-dfd1-4e5e-b6c9-aa3a7b45236d",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        128,
+        912
+      ],
+      "id": "5dcde5f3-1e51-474a-9075-a0c832edfb64",
+      "name": "Schedule Trigger1"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "onboarding_status",
+              "lookupValue": "Active"
+            },
+            {
+              "lookupColumn": "onboarding_status",
+              "lookupValue": "active"
+            }
+          ]
+        },
+        "combineFilters": "OR",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        352,
+        912
+      ],
+      "id": "fd95c132-cca1-414d-82a0-1a29b81f2985",
+      "name": "Fetch Active Users from Database",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {
+          "reset": false
+        }
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        576,
+        912
+      ],
+      "id": "ddd3fd7e-ed2e-4526-b48e-b60c41e6293d",
+      "name": "Process Each User"
+    },
+    {
+      "parameters": {
+        "jsCode": "let signup;\n\n// If signup_date is missing\nif (!$json.signup_date) {\n  return [{\n    json: {\n      ...$json,\n      current_day: null,\n      error: \"signup_date missing\"\n    }\n  }];\n}\n\n// If signup_date is a number (Excel format like 46106)\nif (typeof $json.signup_date === \"number\") {\n  signup = new Date(($json.signup_date - 25569) * 86400 * 1000);\n} else {\n  // If signup_date is string (like 2026-03-25)\n  signup = new Date($json.signup_date);\n}\n\n// If date is invalid\nif (isNaN(signup)) {\n  return [{\n    json: {\n      ...$json,\n      current_day: null,\n      error: \"invalid signup_date\"\n    }\n  }];\n}\n\n// Get today date\nconst today = new Date();\n\n// Calculate current day\nconst current_day = Math.floor((today - signup) / (1000 * 60 * 60 * 24));\n\n// Return result\nreturn [{\n  json: {\n    ...$json,\n    current_day\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        800,
+        560
+      ],
+      "id": "3a4349b0-707f-445a-aaee-66e06672de87",
+      "name": "Calculate User Onboarding Day"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "9844625c-210e-4868-b9af-1a9a0a2d3f23",
+              "leftValue": "={{ $json.last_onboarding_email }}",
+              "rightValue": "={{ $now.format('yyyy-MM-dd') }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1248,
+        544
+      ],
+      "id": "7cf149ab-f0a7-47b9-ad79-a9e08cb8047e",
+      "name": "Check Email Not Sent Today",
+      "alwaysOutputData": false,
+      "onError": "continueErrorOutput"
+    },
+    {
+      "parameters": {
+        "jsCode": "return items.map(item => {\n\n  const day = Number(item.json.current_day);\n  const login = Number(item.json.login_count || 0);\n  const setup = String(item.json.setup_completed).toLowerCase() === \"true\";\n  const lastEmailType = item.json.last_email_type || null;\n  const supportCount = Number(item.json.support_count || 0);\n\n  const emailMap = {\n    0: \"welcome\",\n    1: \"setup_guide\",\n    2: \"login_nudge\",\n    3: \"video_1\",\n    5: \"video_2\",\n    7: \"resources\",\n    10: \"activation_check\",\n    14: \"activation_final\",\n    21: \"use_case\",\n    30: \"checkin\"\n  };\n\n  let email_type = null;\n  let onboarding_status = item.json.onboarding_status || \"Active\";\n\n  // 🚨 1. PAUSE LOGIC (User struggling)\n  if (supportCount > 2) {\n    onboarding_status = \"Paused\";\n    email_type = null;\n  }\n\n  //  2. COMPLETION LOGIC\n  else if (day >= 30) {\n    onboarding_status = \"Completed\";\n    email_type = \"checkin\";\n  }\n\n  // 🔥 3. BEHAVIOR LOGIC (SMART CONTROL)\n  else if (login === 0 && day > 3 && lastEmailType !== \"login_nudge\") {\n    email_type = \"login_nudge\";\n  }\n\n  else if (!setup && day > 7 && lastEmailType !== \"activation_check\") {\n    email_type = \"activation_check\";\n  }\n\n  //  4. DEFAULT DAY-BASED FLOW\n  else {\n    email_type = emailMap[day] || null;\n  }\n\n  return {\n    json: {\n      ...item.json,\n      email_type,\n      onboarding_status,\n      last_email_type: email_type\n    }\n  };\n});"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1472,
+        560
+      ],
+      "id": "57437fab-5e8a-4f96-90b1-f65f1fd1f3ef",
+      "name": "Determine Email Type by Day"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email_id": "={{ $('Fetch Active Users from Database').item.json.Email_id }}",
+            "email_type": "={{ $('Determine Email Type by Day').item.json.email_type \n   ? $('Determine Email Type by Day').item.json.email_type \n   : \"-\" }}",
+            "last_onboarding_email": "={{$now.format('yyyy-MM-dd')}}",
+            "current_day": "={{ $('Calculate User Onboarding Day').item.json.current_day }}",
+            "onboarding_status": "={{ $('Calculate User Onboarding Day').item.json.current_day >= 30 ? \"Completed\" : \"Active\" }}"
+          },
+          "matchingColumns": [
+            "Email_id"
+          ],
+          "schema": [
+            {
+              "id": "Thread_id",
+              "displayName": "Thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email_id",
+              "displayName": "Email_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "signup_date",
+              "displayName": "signup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_day",
+              "displayName": "current_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "onboarding_status",
+              "displayName": "onboarding_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "email_type",
+              "displayName": "email_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_onboarding_email",
+              "displayName": "last_onboarding_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "login_count",
+              "displayName": "login_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_login_date",
+              "displayName": "last_login_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "setup_completed",
+              "displayName": "setup_completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "support_count",
+              "displayName": "support_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email body",
+              "displayName": "Email body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Generated Reply",
+              "displayName": "Generated Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_interaction",
+              "displayName": "last_interaction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        2736,
+        688
+      ],
+      "id": "99043755-616d-4861-881b-cdf60ac10be5",
+      "name": "Update User Email Status",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Fetch Active Users from Database').item.json.Email_id }}",
+        "subject": "={{ $json.output.subject }}",
+        "message": "={{ $json.output.response }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        2512,
+        560
+      ],
+      "id": "6bb910d5-f312-4474-aa8d-8ee9c8418437",
+      "name": "Send Onboarding Email",
+      "webhookId": "e08631fe-9532-4b2e-ac9b-41554a7ee34a",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "filtersUI": {
+          "values": [
+            {
+              "lookupColumn": "signup_date",
+              "lookupValue": "={{ $now.format('yyyy-MM-dd') }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        176,
+        0
+      ],
+      "id": "b5ad95b9-6f4b-46df-b5b9-6d7e9870cba1",
+      "name": "Fetch Incoming User Queries",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.splitInBatches",
+      "typeVersion": 3,
+      "position": [
+        416,
+        0
+      ],
+      "id": "87fdd86c-c09d-4903-a0b8-1eea2c2f448e",
+      "name": "Process Each User Query"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "You are a professional SaaS onboarding email assistant.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=\n\nYour task is to generate a clean, modern, and professional welcome email.\n\nUSER DETAILS:\n- Name:{{ $('Fetch Incoming User Queries').item.json.Name }}\n- Product Name: {{product_name}} (or)luma\n\nREFERENCE EMAIL STRUCTURE (Follow this flow strictly):\n\nSUBJECT: Welcome to [Product] 🚀 — Your next step\n\n1. Greeting\n2. Welcome message\n3. Value proposition (what user gets)\n4. 3-step onboarding guide\n5. CTA button (Complete Setup)\n6. Explain future emails (30-day journey)\n7. Support line\n8. Closing\n9. Footer + unsubscribe\n\nINSTRUCTIONS:\n\n- Personalize using {{name}} and {{product_name}}\n- Keep tone friendly and professional\n- Keep length between 100–150 words\n- Do NOT copy template text exactly — rewrite naturally\n- Keep structure same as reference\n\nFORMATTING RULES:\n\n- Use <p> for paragraphs\n- Use <ol> for steps\n- Use <strong> for emphasis\n- Add spacing between sections\n- Output MUST be clean HTML (no markdown)\n\nCTA BUTTON (MANDATORY):\n\n<a href=\"#\" style=\"\n  background-color:#28a745;\n  color:white;\n  padding:12px 20px;\n  text-decoration:none;\n  border-radius:5px;\n  font-weight:bold;\n\">\n  Complete Setup →\n</a>\n\nOUTPUT FORMAT (STRICT JSON):\n\n{\n  \"subject\": \"string\",\n  \"response\": \"HTML formatted email\"\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        624,
+        16
+      ],
+      "id": "bed27118-a4f7-4d25-aac6-bf3af1112936",
+      "name": "Generate AI Response (Support Agent)"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('Google Sheets Trigger').item.json.Email_id }}",
+        "subject": "={{ $json.output.subject }}",
+        "message": "={{ $json.output.response }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        976,
+        16
+      ],
+      "id": "30c3c21d-1380-4cb2-a346-c64d9ef4cb40",
+      "name": "Send AI Reply Email",
+      "webhookId": "e200571a-0a35-4fcd-8e2d-c5dfd7081d29",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "2ryKmXfniolvo6vA",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "appendOrUpdate",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email_id": "={{ $('Fetch Incoming User Queries').item.json.Email_id }}",
+            "onboarding_status": "active",
+            "last_interaction": "={{ $now.format('yyyy-MM-dd') }}"
+          },
+          "matchingColumns": [
+            "Email_id"
+          ],
+          "schema": [
+            {
+              "id": "Thread_id",
+              "displayName": "Thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email_id",
+              "displayName": "Email_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "signup_date",
+              "displayName": "signup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_day",
+              "displayName": "current_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "onboarding_status",
+              "displayName": "onboarding_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "login_count",
+              "displayName": "login_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_login_date",
+              "displayName": "last_login_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "setup_completed",
+              "displayName": "setup_completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "support_count",
+              "displayName": "support_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email body",
+              "displayName": "Email body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Generated Reply",
+              "displayName": "Generated Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_interaction",
+              "displayName": "last_interaction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1152,
+        16
+      ],
+      "id": "f346db52-7532-49b0-9b82-8fea9a19c937",
+      "name": "Update Query Status & Response",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "Workflow 1\n",
+        "height": 512,
+        "width": 1520
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        -144,
+        -80
+      ],
+      "typeVersion": 1,
+      "id": "028c738b-45ee-4d65-b4a7-c7711e877769",
+      "name": "Workflow 1"
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        1920,
+        784
+      ],
+      "id": "3f23ec86-b075-4a34-b1d2-b7d48e390fbd",
+      "name": "Google Gemini Chat Model3",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "ZcXEdUGZLVRtagFa",
+          "name": "Google Gemini API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"subject\": \"your subject here\",\n  \"response\": \"<html formatted email>\"\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        2304,
+        784
+      ],
+      "id": "5111c8da-b860-4c01-8575-4aaa86cfb560",
+      "name": "Structured Output Parser2"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=You are an onboarding email assistant.",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "=User Name: {{$json.Name}}\nEmail Type: {{$json.email_type}}\nLogin Count: {{$json.login_count}}\nSetup Completed: {{$json.setup_completed}}\n\n\nTASK:\n\n\nGenerate a structured onboarding email in STRICT JSON format.\n\n\nMANDATORY STRUCTURE:\n\n\n1. Subject Line (5–7 words, clear benefit)\n2. Greeting (Hi {{ $json.Name }},)\n3. Body (100–150 words)\n4. ONE Primary CTA (button-style)\n5. Footer (Support + Unsubscribe)\n\n\nBASE EMAIL LOGIC (PRIMARY CONTROL — DO NOT CHANGE):\n\n\nemail_type is the PRIMARY control.\n\nFollow email_type EXACTLY:\n\n* welcome → introduce platform + first step\n\n* setup_guide → include setup steps:\n  • Log in and update password\n  • Add company details\n  • Connect CRM\n  • Connect email\n  • Setup ICP\n\n* login_nudge → remind user to log in\n\n* video_1 → introduce demo/tutorial\n\n* video_2 → advanced workflow\n\n* resources → help center/templates\n\n* activation_check → re-engagement (check inactivity and motivate action)\n\n* activation_final → final nudge + human help\n\n* use_case → industry example\n\n* checkin → feedback + usage summary\n\nDO NOT change email purpose under any circumstances.\n\n\nACTIVITY ADJUSTMENT (IMPORTANT):\n\n\nModify tone ONLY (do NOT change email_type):\n\n* If login_count = 0:\n  → encourage login\n\n* If login_count > 0 AND setup_completed = false:\n  → guide clearly to complete setup\n\n* If setup_completed = true:\n  → appreciate user and encourage next step (explore features / deeper usage)\n\n\nCTA RULES (VERY IMPORTANT):\n\n\nChoose CTA based on email_type:\n\n* welcome → Login Now\n* setup_guide → Complete Setup\n* login_nudge → Log In\n* video_1 → Watch Tutorial\n* video_2 → Watch Now\n* resources → Explore Resources\n* activation_check → Get Back on Track\n* activation_final → Book a Call\n* use_case → Try This Workflow\n* checkin → Share Feedback\n\nIf setup_completed = true:\n→ adjust CTA to forward-moving actions like:\n\"Explore Features\" or \"Try Workflow\"\n\nONLY ONE CTA.\n\n\nGOOGLE SHEETS TOOL (LINK FETCH — CONTROLLED):\n\n\nYou have access to a Google Sheets tool that stores links.\n\nRules:\n\n* ONLY use Google Sheets for:\n  • use_case\n  • video_1\n  • video_2\n\n* If email_type = use_case:\n  → MUST fetch link from Google Sheets\n  → Use it in CTA button\n\n* If email_type = video_1 or video_2:\n  → MUST fetch link from Google Sheets\n  → Use it in CTA button\n\n* If no link found OR tool fails:\n  → fallback to default link\n\n* NEVER hardcode links\n\n\nCTA LINK RULE (FINAL):\n\n\nDefault CTA link:\nhttps://eideacs.com/\n\nRules:\n\n* If email_type = use_case:\n  → Use link from Google Sheets\n\n* If email_type = video_1 or video_2:\n  → Use link from Google Sheets\n\n* For ALL other email types:\n  → Use default link https://eideacs.com/\n\n* If no link found:\n  → fallback to https://eideacs.com/\n\n\nSTYLE RULES:\n\n\n* Friendly and simple tone\n* Tone must match email_type:\n  • welcome → excited\n  • setup_guide → helpful\n  • activation_check → motivating\n  • activation_final → slightly urgent\n* No long paragraphs\n* Use bullet points where needed\n* Avoid repetition\n* Keep within 100–150 words\n\n\nSTRICT CONTROL RULES:\n\n\n* email_type is the PRIMARY control\n* NEVER override email_type using external context\n* ALWAYS follow CTA link rules strictly\n* Do NOT hallucinate links or features\n* Always generate email even if tool fails\n* Ensure user's name is properly capitalized\n\n\nHTML FORMAT RULES:\n\n\n* Use <p> for paragraphs\n* Use <ul><li> for steps\n\nCTA must be a BLUE button:\n\n<a href=\"DYNAMIC_LINK\" style=\"display:inline-block;padding:10px 16px;background-color:#007BFF;color:white;text-decoration:none;border-radius:5px;\">CTA TEXT</a>\n\n* Replace DYNAMIC_LINK based on CTA LINK RULE\n\n* Footer must include:\n\n<p>Support: support@yourcompany.com</p>\n<p><a href=\"#\">Unsubscribe</a></p>\n\n\nOUTPUT FORMAT (STRICT JSON ONLY):\n\n\n{\n\"subject\": \"your subject here\",\n\"response\": \"<html formatted email>\"\n}\n\nDO NOT return anything outside JSON.\n"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        2048,
+        560
+      ],
+      "id": "2a531522-dee0-4913-b82c-ee4abcda256d",
+      "name": "Generate Personalized Email (AI)1"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "https://docs.google.com/document/d/1MiT3iL6h0PnxsfLfnzRKCQAyBGlqc3bPgxunPa7lAn4/edit?tab=t.0",
+        "simple": false
+      },
+      "type": "n8n-nodes-base.googleDocsTool",
+      "typeVersion": 2,
+      "position": [
+        2048,
+        784
+      ],
+      "id": "2cf12dd9-11f9-498d-b354-ebb9affa9ad1",
+      "name": "Google Docs",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "nhVjEPySilBOS2N1",
+          "name": "Google Docs account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "c1ea64bf-24df-45d1-9173-7ea0d036be5e",
+              "leftValue": "={{ $json.email_type }}",
+              "rightValue": "null",
+              "operator": {
+                "type": "string",
+                "operation": "notEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1696,
+        560
+      ],
+      "id": "797a2352-e1ea-4592-9844-59a48f59f7c8",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 662312130,
+          "mode": "list",
+          "cachedResultName": "Links",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=662312130"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        2176,
+        784
+      ],
+      "id": "7a8b7410-6716-474c-adef-ae4bf454b863",
+      "name": "Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "516ee4e1-bcfa-4788-af16-fef986f69362",
+              "leftValue": "={{ $json.current_day }}",
+              "rightValue": 30,
+              "operator": {
+                "type": "number",
+                "operation": "lte"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        1024,
+        560
+      ],
+      "id": "15af81ee-60b4-4e2f-915c-a71e8113bbda",
+      "name": "If1"
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentId": {
+          "__rl": true,
+          "value": "1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44",
+          "mode": "list",
+          "cachedResultName": "DB",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": 1354535146,
+          "mode": "list",
+          "cachedResultName": "onboarding_setup",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1TwUNJXWC_Bdw_KpeW2PWzC_BqZh_j5rXEITNR0zKx44/edit#gid=1354535146"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Email_id": "={{ $('Fetch Active Users from Database').item.json.Email_id }}",
+            "email_type": "={{ $('Determine Email Type by Day').item.json.email_type \n   ? $('Determine Email Type by Day').item.json.email_type \n   : \"-\" }}",
+            "last_onboarding_email": "={{$now.format('yyyy-MM-dd')}}",
+            "current_day": "={{ $('Calculate User Onboarding Day').item.json.current_day }}"
+          },
+          "matchingColumns": [
+            "Email_id"
+          ],
+          "schema": [
+            {
+              "id": "Thread_id",
+              "displayName": "Thread_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email_id",
+              "displayName": "Email_id",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "signup_date",
+              "displayName": "signup_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "current_day",
+              "displayName": "current_day",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "onboarding_status",
+              "displayName": "onboarding_status",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "email_type",
+              "displayName": "email_type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "last_onboarding_email",
+              "displayName": "last_onboarding_email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "login_count",
+              "displayName": "login_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_login_date",
+              "displayName": "last_login_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "setup_completed",
+              "displayName": "setup_completed",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "support_count",
+              "displayName": "support_count",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Email body",
+              "displayName": "Email body",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Categories",
+              "displayName": "Categories",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Urgency",
+              "displayName": "Urgency",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "Generated Reply",
+              "displayName": "Generated Reply",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "last_interaction",
+              "displayName": "last_interaction",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": true
+            },
+            {
+              "id": "row_number",
+              "displayName": "row_number",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "number",
+              "canBeUsedToMatch": true,
+              "readOnly": true,
+              "removed": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        1568,
+        976
+      ],
+      "id": "5b747d49-a50b-4707-b5c6-1928d8e91d1b",
+      "name": "Update User Email Status1",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "nYDcMkZytv8nJoUQ",
+          "name": "Google Sheets account 2"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Generate Personalized Email (AI)1": [
+      {
+        "json": {
+          "output": {
+            "subject": "Don't Miss Out: Get Back on Track!",
+            "response": "<p>Hi sai,</p><p>We noticed you've been busy exploring Eideacs, which is great! To unlock the full power of our platform and truly streamline your workflow, there are just a few more steps to complete your setup.</p><p>Logging in and updating your password, adding your company details, connecting your CRM and email, and setting up your ICP are crucial for a seamless experience. These steps will help personalize your account and ensure you get the most out of Eideacs from day one.</p><p>Don't let these final steps hold you back from transforming your productivity. We're here to help every step of the way! Get back in the driver's seat and start seeing real results.</p><a href=\"https://eideacs.com/\" style=\"display:inline-block;padding:10px 16px;background-color:#007BFF;color:white;text-decoration:none;border-radius:5px;\">Get Back on Track</a><p>Support: support@yourcompany.com</p><p><a href=\"#\">Unsubscribe</a></p>"
+          }
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Calculate User Onboarding Day": [
+      {
+        "json": {
+          "row_number": 5,
+          "Thread_id": "19d06748bbe4cads",
+          "Email_id": "thejohnwick540@gmail.com",
+          "Name": "sai",
+          "signup_date": "2026-03-27",
+          "current_day": 30,
+          "onboarding_status": "Active",
+          "email_type": "",
+          "last_onboarding_email": "2026-04-02",
+          "login_count": 4,
+          "last_login_date": "2026-03-30",
+          "setup_completed": "no",
+          "support_count": "",
+          "Email body": "",
+          "Categories": "",
+          "Urgency": "",
+          "Generated Reply": "",
+          "last_interaction": ""
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate AI Response (Support Agent)",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate AI Response (Support Agent)",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Incoming User Queries",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Schedule Trigger1": {
+      "main": [
+        [
+          {
+            "node": "Fetch Active Users from Database",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Active Users from Database": {
+      "main": [
+        [
+          {
+            "node": "Process Each User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Each User": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Calculate User Onboarding Day",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate User Onboarding Day": {
+      "main": [
+        [
+          {
+            "node": "If1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Email Not Sent Today": {
+      "main": [
+        [
+          {
+            "node": "Determine Email Type by Day",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Process Each User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Determine Email Type by Day": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update User Email Status": {
+      "main": [
+        [
+          {
+            "node": "Process Each User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Onboarding Email": {
+      "main": [
+        [
+          {
+            "node": "Update User Email Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Incoming User Queries": {
+      "main": [
+        [
+          {
+            "node": "Process Each User Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Process Each User Query": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Generate AI Response (Support Agent)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate AI Response (Support Agent)": {
+      "main": [
+        [
+          {
+            "node": "Send AI Reply Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send AI Reply Email": {
+      "main": [
+        [
+          {
+            "node": "Update Query Status & Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Query Status & Response": {
+      "main": [
+        [
+          {
+            "node": "Process Each User Query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Gemini Chat Model3": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Generate Personalized Email (AI)1",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser2": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Generate Personalized Email (AI)1",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Personalized Email (AI)1": {
+      "main": [
+        [
+          {
+            "node": "Send Onboarding Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Docs": {
+      "ai_tool": [
+        [
+          {
+            "node": "Generate Personalized Email (AI)1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Generate Personalized Email (AI)1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Process Each User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "Generate Personalized Email (AI)1",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If1": {
+      "main": [
+        [
+          {
+            "node": "Check Email Not Sent Today",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update User Email Status1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "1f4bbae4-4768-4a71-ad67-9ac0d2e2e923",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "78009fc29414294678e81009d661eb841edc07c8d795d800a134b1c710f7805e"
+  },
+  "id": "H8OT2x2iFrxP7npM",
+  "tags": []
+}
